@@ -17,17 +17,13 @@ class FSLModel:
 
         if self.model_name == 'llama_31_8b' or self.model_name == 'llama_31_70b':
             #huggingface_login()  # Call the login function (requires token in environment)
-            # Define the API URL and your DeepInfra API Token
-            '''
-            self.url = "https://api.deepinfra.com/v1/openai/chat/completions"
-            api_token = "xxx"
-            self.headers = {
-                        "Content-Type": "application/json",
-                        "Authorization": f"Bearer {api_token}"
-                    }
-            '''
-            
-            self.api = 'xxx'
+
+            self.api_key = os.getenv("DEEPINFRA_API_KEY")  # Use environment variable for API key #self.api = 'xxx'
+            if not self.api_key:
+                raise ValueError("DeepInfra API key not found in environment variables.")
+            if not self.api_key:
+                raise ValueError("DeepInfra API key not found in environment variables.")
+
             if self.model_name == 'llama_31_8b':
                 self.llm_name = "llama-v3.1-8b-instruct" #meta-llama/Meta-Llama-3.1-70B-Instruct
             elif self.model_name == 'llama_31_70b':
@@ -36,8 +32,11 @@ class FSLModel:
                 print('No Model')
             
         elif self.model_name == 'gpt4':
+            self.api_key = os.getenv("OPENAI_API_KEY")  # Use environment variable for API key # self.api = 'xxx'
+            if not self.api_key:
+                raise ValueError("OpenAI API key not found in environment variables.")
             self.llm_name= "gpt-4o"
-            self.api = 'xxx'
+           
         else:
             raise ValueError("The input model is not available.")
         
@@ -54,13 +53,13 @@ class FSLModel:
         ]
         if self.model_name == 'gpt4':
             client = OpenAI(
-                        api_key=self.api,
+                        api_key=self.api_key,
                     )
             response = client.chat.completions.create(model=self.llm_name, messages=data_input)
 
         else: #this for llama
             client = OpenAI(
-                        api_key=self.api,
+                        api_key=self.api_key,
                         base_url = "https://inference.finetunedb.com/v1"
                     )
             response = client.chat.completions.create(model=self.llm_name, messages=data_input)
