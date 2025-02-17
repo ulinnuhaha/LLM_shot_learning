@@ -20,6 +20,24 @@ python fsl_main.py \
 If you want to change the API provider and the LLM version please go to `few_shot_learning` repository.
 
 ## Evaluation
+The output data of both learning schemes will be in JSON format as follows:
+`{
+"translations": [
+   {
+   "Italian": "imprimere nella mente",
+   "Ladin": ""
+   },
+   {
+   "Italian": "mettere paura a qcn.",
+   "Ladin": ""
+   },
+   ...
+   {
+   "Italian": "un animale scattante",
+   "Ladin": ""
+ }
+ ]
+}`
 Before performing the evaluation, ensure you have prepared a parallel sentences dataset.
 To run the evaluation, use the evaluation.ipynb script:
 ```
