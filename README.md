@@ -4,7 +4,12 @@ This repository focuses on exploring few-shot learning and zero-shot learning te
 ## Zero-Shot Learning
 If you want to use zero-shot learning, run the following command:
 ```
-python run_trans.py --model_name_or_path ./pretrained_model/nllb_tr_ch
+python zsl_main.py \
+  --model_name llama_31_8b \
+  --target_lang italian \
+  --test_data ./data_dir/test_data \
+  --batch_size 25 \
+  --save_dir ./save_results
 ```
 ## Few-Shot Learning
 If you want to use few-shot learning, run the following command:
