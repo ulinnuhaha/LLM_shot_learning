@@ -1,5 +1,5 @@
 # Shot Learning 
-This repository focuses on exploring few-shot learning and zero-shot learning techniques for machine translation (MT) using Large Language Models (LLMs). We leverage models like GPT and Llama to perform shot learning via their respective APIs.
+This repository focuses on exploring few-shot learning and zero-shot learning techniques for machine translation (MT) using Large Language Models (LLMs). We leverage models like GPT and Llama to perform shot learning via their respective APIs. To run the code in this repository, you should already have a parallel sentence dataset in CSV format
 
 ## Zero-Shot Learning
 If you want to use zero-shot learning, run the following command:
