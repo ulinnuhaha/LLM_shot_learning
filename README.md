@@ -12,7 +12,7 @@ If you want to use few-shot learning, run the following command:
 python run_trans.py --model_name_or_path ./pretrained_model/nllb_tr_ch
 ```
 ## Evaluation
-Before performing the evaluation, ensure you have prepared a parallel sentence dataset.
+Before performing the evaluation, ensure you have prepared a parallel sentences dataset.
 To run the evaluation, use the evaluation.ipynb script:
 ```
 evaluation.ipynb
