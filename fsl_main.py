@@ -99,7 +99,7 @@ def main():
             # prepraing set the output into json file
             if not os.path.exists(args.save_dir):
                     os.makedirs(args.save_dir)
-            output_path = os.path.join(args.save_dir, path_f, f'translation_{args.model_name}_{args.test_data}_size of_{args.batch_size}_batch_{index_batch}.json')
+            output_path = os.path.join(args.save_dir, path_f, f'translation_{args.model_name}_{args.target_lang}_size of_{args.batch_size}_batch_{index_batch}.json')
                 
             # Save the JSON response for this batch
             with open(output_path, 'w', encoding='utf-8') as json_file:
