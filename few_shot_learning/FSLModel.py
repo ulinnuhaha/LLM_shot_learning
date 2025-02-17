@@ -26,6 +26,7 @@ class FSLModel:
                         "Authorization": f"Bearer {api_token}"
                     }
             '''
+            
             self.api = 'xxx'
             if self.model_name == 'llama_31_8b':
                 self.llm_name = "llama-v3.1-8b-instruct" #meta-llama/Meta-Llama-3.1-70B-Instruct
@@ -54,7 +55,6 @@ class FSLModel:
         if self.model_name == 'gpt4':
             client = OpenAI(
                         api_key=self.api,
-                        #base_url = "https://inference.finetunedb.com/v1"
                     )
             response = client.chat.completions.create(model=self.llm_name, messages=data_input)
 
