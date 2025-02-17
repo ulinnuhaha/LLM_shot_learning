@@ -21,7 +21,7 @@ def DataTestingArguments():
     parser.add_argument('--batch_size', 
         type=int, default=20, help='Number of request sentences per batch of target translation')
     parser.add_argument('--save_dir', 
-        type=str, required=True, help='Directory for saving experimental results')
+        type=str, required=True, help='Directory for saving the results')
     args = parser.parse_args()
     return args
 
