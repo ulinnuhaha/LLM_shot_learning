@@ -21,6 +21,7 @@ If you want to change the API provider and the LLM version please go to `few_sho
 
 ## Evaluation
 The output data of both learning schemes will be in JSON format as follows:
+
 `{
 "translations": [
    {
@@ -37,7 +38,8 @@ The output data of both learning schemes will be in JSON format as follows:
    "Ladin": ""
  }
  ]
-}`
+}`.
+
 Before performing the evaluation, ensure you have prepared a parallel sentences dataset.
 To run the evaluation, use the evaluation.ipynb script:
 ```
