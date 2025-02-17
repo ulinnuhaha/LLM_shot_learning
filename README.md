@@ -25,17 +25,13 @@ The output data of both learning schemes will be in JSON format as follows:
 `{
 "translations": [
    {
-   "Italian": "imprimere nella mente",
-   "Ladin": ""
-   },
-   {
-   "Italian": "mettere paura a qcn.",
-   "Ladin": ""
-   },
+   "Source_lang": "xxx....",
+   "Targert_lang": "xxx..."
+   }
    ...
    {
-   "Italian": "un animale scattante",
-   "Ladin": ""
+   "Source_lang": "xxx...",
+   "Targert_lang": "xxx..."
  }
  ]
 }`.
