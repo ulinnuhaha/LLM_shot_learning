@@ -9,8 +9,16 @@ python run_trans.py --model_name_or_path ./pretrained_model/nllb_tr_ch
 ## Few-Shot Learning
 If you want to use few-shot learning, run the following command:
 ```
-python run_trans.py --model_name_or_path ./pretrained_model/nllb_tr_ch
+python fsl_main.py \
+  --model_name llama_31_8b \
+  --dataset ./data_dir/dataset \
+  --target_lang italian \
+  --test_data ./data_dir/test_data \
+  --batch_size 25 \
+  --save_dir ./save_results
 ```
+If you want to change the API provider and the LLM version please go to `few_shot_learning` repository.
+
 ## Evaluation
 Before performing the evaluation, ensure you have prepared a parallel sentences dataset.
 To run the evaluation, use the evaluation.ipynb script:
