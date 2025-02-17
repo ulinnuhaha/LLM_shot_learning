@@ -62,7 +62,7 @@ def main():
         requested_translation = json.dumps(requested_translation, ensure_ascii=False)
 
         # Write the prompts
-        prompt_1 = (f"Here are examples of translations in a JSON format between {source_lang} and {target_lang}:\n"
+        prompt_1 = (f"You are machine translation between {source_lang} and {target_lang}:\n"
                     )
         prompt_2 = (
                     f"\n Please provide the translation of the following {len(data_batch)} entries in the JSON format, filling the empty '{target_lang}' fields for each entry. "
