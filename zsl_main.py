@@ -12,56 +12,65 @@ def DataTestingArguments():
     parser = argparse.ArgumentParser()
     parser.add_argument('--model_name', 
         type=str, required=True, help='Load a LLM as model for few-shot learning')
+    parser.add_argument('--target_lang', 
+        type=str, required=True, help='The language of translation target')
+    parser.add_argument('--test_data', 
+        type=str, required=True, help='Directory of the CSV test data file')
     parser.add_argument('--batch_size', 
         type=int, default=20, help='Number of request sentences per batch of target translation')
     parser.add_argument('--save_dir', 
-        type=str, required=True, help='Directory for saving experimental results')
+        type=str, required=True, help='Directory for saving the results')
     args = parser.parse_args()
     return args
-
-#!python zsl_main.py --model_name gpt4 --batch_size 20 --save_dir ./save_results
 
 def main():
     #create the configuration class
     args=DataTestingArguments() #call the arguments
+    
     ####---Load Dataset---####
-    dataset = pd.read_csv(f"Trip_adv_ita_mono.csv")
-    dataset = dataset[24100:]
+    dataset = pd.read_csv(f"{args.test_data}.csv")
+    
+    #dataset = dataset[24100:]
+    # Set the source and target languages
+    if args.target_lang == 'language_1':
+        dataset['language_1'] = " " # empty the target language in test data as we want to predict it
+        source_lang = 'language_2'
+        target_lang = 'language_1'
+        path_f = 'ladin2italian' # Please change the name of the path for the result directory
+    else:
+        dataset['language_2'] = " " # empty the target language in test data as we want to predict it
+        source_lang = 'language_1'
+        target_lang = 'language_2'
+        path_f = 'italian2ladin' # Please change the name of the path for the result directory
     # Convert DataFrame to JSON format for few-shot examples
     def json_conv(data):
         return {"translations": data.to_dict(orient='records')}
 
-    # Set the LLMs
+    # Translation loop with rotating few-shot examples
+    
+    # Set the LLM
     zsl_model = ZSLModel(args.model_name)
-    index_batch = 1205
+    index_batch = 0
     for batch_start in range(0, len(dataset), args.batch_size):       
-        # Select a rotating subset of few-shot examples
-        zero_shot_examples = dataset.iloc[batch_start:batch_start + args.batch_size] 
-         # Increment for the next batch
-
+       # Get the batch of test data
+        data_batch = dataset.iloc[batch_start:batch_start + args.batch_size]        
+        
         # Convert DataFrame to JSON format
-        #zero_shot_examples = json_conv(zero_shot_examples)        
+        requested_translation = json_conv(data_batch[[source_lang, target_lang]])
+        
         # Construct the prompt for the model
-        #zero_shot_examples=json.dumps(zero_shot_examples, ensure_ascii=False) 
+        requested_translation = json.dumps(requested_translation, ensure_ascii=False)
 
-
-        # Convert DataFrame to a list in the desired format
-        #formatted_few_shot_examples = [f"[texts: {row['italian']}" for _, row in few_shot_examples.iterrows()]
-        formatted_shot_examples = [f"[{row['italian']}]" for _, row in zero_shot_examples.iterrows()]
-
-        # make it to string
-        formatted_shot_examples = ", ".join(formatted_shot_examples)
-        # print(formatted_shot_examples)
-
-        # Prompt templates
-        prompt_1 = ("Please review and correct the following Italian texts, ensuring proper Italian grammar, syntax, and style. Focus on clarity and accuracy while preserving the original meaning:\n"
+        # Write the prompts
+        prompt_1 = (f"Here are examples of translations in a JSON format between {source_lang} and {target_lang}:\n"
                     )
         prompt_2 = (
-                    f"\nReturn the corrected version in the original format, as a list (e.g., [xxx], [xxx], ..., [xxx]). Do not include any additional explanations or the original texts."
+                    f"\n Please provide the translation of the following {len(data_batch)} entries in the JSON format, filling the empty '{target_lang}' fields for each entry. "
+                    "Do not include any additional explanations or text.\n"
                     )
-        
+
         # Generate translation using LLMs with API
-        generated_translation = zsl_model.generating(prompt_1, formatted_shot_examples, prompt_2)
+        generated_translation = zsl_model.generating(prompt_1, prompt_2, requested_translation)
         
         # If the response is successful
         #if generated_translation.status_code == 200:
@@ -72,7 +81,7 @@ def main():
             # prepraing set the output into json file
             if not os.path.exists(args.save_dir):
                     os.makedirs(args.save_dir)
-            output_path = os.path.join(args.save_dir, f'corrected_Trip_adv_ita_mono_{args.model_name}_batch_{index_batch}.json')
+            output_path = os.path.join(args.save_dir, path_f, f'translation_{args.model_name}_for_{args.target_lang}_size of_{args.batch_size}_batch_{index_batch}.json')
                 
             # Save the JSON response for this batch
             with open(output_path, 'w', encoding='utf-8') as json_file:
