@@ -12,12 +12,12 @@ def DataTestingArguments():
     parser = argparse.ArgumentParser()
     parser.add_argument('--model_name', 
         type=str, required=True, help='Load a LLM as model for few-shot learning')
-    parser.add_argument('--dataset_dir', 
-        type=str, required=True, help='Directory of the dataset files')
+    parser.add_argument('--dataset', 
+        type=str, required=True, help='Directory of the CSV dataset file')
     parser.add_argument('--target_lang', 
-        type=str, required=True, help='Directory of the dataset files')
+        type=str, required=True, help='The language of translation target')
     parser.add_argument('--test_data', 
-        type=str, required=True, help='Directory of the testing data files')
+        type=str, required=True, help='Directory of the CSV test data file')
     parser.add_argument('--batch_size', 
         type=int, default=20, help='Number of request sentences per batch of target translation')
     parser.add_argument('--save_dir', 
@@ -30,30 +30,27 @@ def main():
     args=DataTestingArguments() #call the arguments
     
     ####---Load Dataset---####
-    train_data = pd.read_csv(os.path.join(args.dataset_dir, f"ita2lad_dataset.csv"))
-    test_data = pd.read_csv(os.path.join(args.dataset_dir, f"{args.test_data}.csv"))
-    # Capitalize only the first character of each column name
-    train_data.columns = train_data.columns.str.capitalize()
-    test_data.columns = test_data.columns.str.capitalize()
-
-    test_data = test_data #[:4]
+    train_data = pd.read_csv(os.path.join(f"{args.dataset}.csv"))
+    test_data = pd.read_csv(os.path.join(f"{args.test_data}.csv"))
+    
+    #test_data = test_data #[:4]
 
     # Set the source and target languages
-    if args.target_lang == 'italian':
-        test_data['Italian'] = " "
-        source_lang = 'Ladin'
-        target_lang = 'Italian'
-        path_f = 'ladin2italian'
+    if args.target_lang == 'language_1':
+        test_data['language_1'] = " " # empty the target language in test data as we want to predict it
+        source_lang = 'language_2'
+        target_lang = 'language_1'
+        path_f = 'ladin2italian' # Please change the name of the path for the result directory
     else:
-        test_data['Ladin'] = " "
-        source_lang = 'Italian'
-        target_lang = 'Ladin'
-        path_f = 'italian2ladin'
+        test_data['language_2'] = " " # empty the target language in test data as we want to predict it
+        source_lang = 'language_1'
+        target_lang = 'language_2'
+        path_f = 'italian2ladin' # Please change the name of the path for the result directory
     
     # Convert DataFrame to JSON format for few-shot examples
     def json_conv(data):
         return {"translations": data.to_dict(orient='records')}
-    
+
     # Translation loop with rotating few-shot examples
     rotation_index = 0  # Initialize a cumulative rotation index
 
@@ -83,29 +80,12 @@ def main():
         requested_translation = json.dumps(requested_translation, ensure_ascii=False)
 
         # Write the prompts
-        prompt_1 = ("Here are examples of translations in a JSON format between Italian and Ladin with the Val Badia variant:\n"
+        prompt_1 = (f"Here are examples of translations in a JSON format between {source_lang} and {target_lang}:\n"
                     )
         prompt_2 = (
                     f"\n Please provide the translation of the following {len(test_batch)} entries in the JSON format, filling the empty '{target_lang}' fields for each entry. "
                     "Do not include any additional explanations or text.\n"
                     )
-        
-        '''
-        # Convert DataFrame to a list in the desired format
-        formatted_test_batch = [f"[source_lang: {row[source_lang]}, ladin: {row[target_lang]}]" for _, row in test_batch.iterrows()]
-        formatted_few_shot_examples = [f"[source_lang: {row[source_lang]}, target_lang: {row[target_lang]}]" for _, row in few_shot_examples.iterrows()]
-        # make it to string
-        formatted_test_batch = ", ".join(formatted_test_batch)
-        formatted_few_shot_examples = ", ".join(formatted_few_shot_examples)
-
-        # Prompt templates
-        prompt_1 = ("Here are examples of translations between Italian and Ladin with the Val Badia variant:\n"
-                    )
-        prompt_2 = (
-                    f"\n Please provide the translation of the following {len(test_batch)} entries by filling the empty '{target_lang}' fields for each entry. "
-                    "Do not include any additional explanations or text.\n"
-                    )
-        '''
 
         # Generate translation using LLMs with API
         generated_translation = fsl_model.generating(prompt_1, prompt_2, few_shot_json, requested_translation)
