@@ -18,7 +18,7 @@ class FSLModel:
         if self.model_name == 'llama_31_8b' or self.model_name == 'llama_31_70b':
             #huggingface_login()  # Call the login function (requires token in environment)
 
-            self.api_key = os.getenv("DEEPINFRA_API_KEY")  # Use environment variable for API key #self.api = 'xxx'
+            self.api_key = os.getenv("FINETUNEDB_API_KEY")  # Use environment variable for API key #self.api = 'xxx'
             if not self.api_key:
                 raise ValueError("DeepInfra API key not found in environment variables.")
             if not self.api_key:
