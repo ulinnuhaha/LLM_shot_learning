@@ -11,6 +11,8 @@ python zsl_main.py \
   --batch_size 25 \
   --save_dir ./save_results
 ```
+If you want to change the API provider and the LLM version please go to `zero_shot_learning` repository.
+
 ## Few-Shot Learning
 If you want to use few-shot learning, run the following command:
 ```
