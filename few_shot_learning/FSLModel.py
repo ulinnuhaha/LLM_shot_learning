@@ -19,7 +19,7 @@ class FSLModel:
              Define the API Token
             self.api_key = os.getenv("FINETUNEDB_API_KEY")  # Use environment variable for API key #self.api = 'xxx'
             if not self.api_key:
-                raise ValueError("DeepInfra API key not found in environment variables.")
+                raise ValueError("API key not found in environment variables.")
 
             if self.model_name == 'llama_31_8b':
                 self.llm_name = "llama-v3.1-8b-instruct" #meta-llama/Meta-Llama-3.1-70B-Instruct
