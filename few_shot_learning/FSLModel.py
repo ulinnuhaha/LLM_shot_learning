@@ -48,16 +48,10 @@ class FSLModel:
                     "content": prompt_2 + requested_translation
                 }
         ]
-        if self.model_name == 'gpt4':
-            client = OpenAI(
-                        api_key=self.api_key,
+        # Performing inferencing from LLM
+        client = OpenAI(
+                        api_key=self.api,
                     )
-            response = client.chat.completions.create(model=self.llm_name, messages=data_input)
-
-        else: #this for llama
-            client = OpenAI(
-                        api_key=self.api_key,
-                    )
-            response = client.chat.completions.create(model=self.llm_name, messages=data_input)
+        response = client.chat.completions.create(model=self.llm_name, messages=data_input)
                    
         return response
