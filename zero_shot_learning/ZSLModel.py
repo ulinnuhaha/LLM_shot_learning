@@ -20,9 +20,7 @@ class ZSLModel:
 
             self.api_key = os.getenv("FINETUNEDB_API_KEY")  # Use environment variable for API key #self.api = 'xxx'
             if not self.api_key:
-                raise ValueError("DeepInfra API key not found in environment variables.")
-            if not self.api_key:
-                raise ValueError("DeepInfra API key not found in environment variables.")
+                raise ValueError("FinetuneDB API key not found in environment variables.")
 
             if self.model_name == 'llama_31_8b':
                 self.llm_name = "llama-v3.1-8b-instruct" #meta-llama/Meta-Llama-3.1-70B-Instruct
@@ -51,17 +49,10 @@ class ZSLModel:
                     "content": prompt_2 + requested_translation
                 }
         ]
-        if self.model_name == 'gpt4':
-            client = OpenAI(
-                        api_key=self.api_key,
+        # Performing inferencing from LLM
+        client = OpenAI(
+                        api_key=self.api,
                     )
-            response = client.chat.completions.create(model=self.llm_name, messages=data_input)
-
-        else: #this for llama
-            client = OpenAI(
-                        api_key=self.api_key,
-                        base_url = "https://inference.finetunedb.com/v1"
-                    )
-            response = client.chat.completions.create(model=self.llm_name, messages=data_input)
+        response = client.chat.completions.create(model=self.llm_name, messages=data_input)
                    
         return response
