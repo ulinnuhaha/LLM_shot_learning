@@ -1,7 +1,7 @@
 # Import Libraries
-import requests
+import os
 from openai import OpenAI
-# Define the headers for the request
+
 
 class FSLModel:
     def __init__(self, model_name):
@@ -16,8 +16,7 @@ class FSLModel:
     def load_model(self):
 
         if self.model_name == 'llama_31_8b' or self.model_name == 'llama_31_70b':
-            #huggingface_login()  # Call the login function (requires token in environment)
-
+             Define the API Token
             self.api_key = os.getenv("FINETUNEDB_API_KEY")  # Use environment variable for API key #self.api = 'xxx'
             if not self.api_key:
                 raise ValueError("DeepInfra API key not found in environment variables.")
