@@ -50,9 +50,18 @@ class ZSLModel:
                 }
         ]
         # Performing inferencing from LLM
-        client = OpenAI(
+        if self.model_name == 'gpt4':
+            client = OpenAI(
                         api_key=self.api_key,
+                        #base_url = "https://inference.finetunedb.com/v1"
                     )
-        response = client.chat.completions.create(model=self.llm_name, messages=data_input)
+            response = client.chat.completions.create(model=self.llm_name, messages=data_input)
+
+        else: #this for llama
+            client = OpenAI(
+                        api_key=self.api_key,
+                        base_url = "https://inference.finetunedb.com/v1"
+                    )
+            response = client.chat.completions.create(model=self.llm_name, messages=data_input)
                    
         return response
