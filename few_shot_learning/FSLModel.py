@@ -50,7 +50,7 @@ class FSLModel:
         ]
         # Performing inferencing from LLM
         client = OpenAI(
-                        api_key=self.api,
+                        api_key=self.api_key,
                     )
         response = client.chat.completions.create(model=self.llm_name, messages=data_input)
                    
